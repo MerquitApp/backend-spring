@@ -14,6 +14,7 @@ import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
@@ -30,7 +31,12 @@ public class ProjectService {
 
     private final Integer SHARE_CODE_LENGTH = 6;
 
-    @CacheEvict(value = "project", key = "#result.id")
+    @Caching(
+            evict = {
+                    @CacheEvict(value = "project", key = "#result.id"),
+                    @CacheEvict(value = "projects", key = "#user.id")
+            }
+    )
     public Project create(CreateProjectDTO createProjectDTO, UserDetails user) {
         Project project = Project.builder()
                 .name(createProjectDTO.getName())
@@ -47,7 +53,6 @@ public class ProjectService {
         return this.projectRepository.save(project);
     }
 
-    @Cacheable(value = "projects", key = "#userId")
     public List<Project> getAll(Long userId) {
         return this.projectRepository.findByUserId(userId);
     }
