@@ -23,7 +23,8 @@ public class SecurityConfig {
     private final List<AntPathRequestMatcher> excludedUrls = List.of(
             new AntPathRequestMatcher("/auth/login/**"),
             new AntPathRequestMatcher("/auth/register/**"),
-            new AntPathRequestMatcher("/swagger-ui/**")
+            new AntPathRequestMatcher("/swagger-ui/**"),
+            new AntPathRequestMatcher("/api-docs/**")
     );
 
     @Autowired
