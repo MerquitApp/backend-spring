@@ -76,7 +76,6 @@ public class SecurityConfig {
         return source;
     }
 
-
     @Bean
     public JWTAuthorizationFilter jwtAuthorizationFilter() {
         return new JWTAuthorizationFilter(this.excludedUrls);
