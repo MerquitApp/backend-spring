@@ -1,8 +1,8 @@
-FROM maven:3.8.3-jdk-11 AS build
-COPY src/main/java/com/mercapp/backendspring/project /app
+FROM maven:3.9.6-eclipse-temurin-21-alpine AS build
 WORKDIR /app
+COPY . .
 RUN mvn package -DskipTests
 
-FROM openjdk:11-jre-slim
-COPY --from=build /app/target/my-application.jar /app.jar
+FROM eclipse-temurin:21-jre-alpine
+COPY --from=build /app/target/backend-spring-0.0.1-SNAPSHOT.jar /app.jar
 ENTRYPOINT ["java", "-jar", "/app.jar"]
