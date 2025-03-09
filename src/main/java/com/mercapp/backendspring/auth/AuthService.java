@@ -50,6 +50,7 @@ public class AuthService {
     public void appendTokenToCookie(HttpServletResponse response, String token) {
         Cookie cookie = new Cookie(AuthController.COOKIE_NAME, token);
         cookie.setHttpOnly(true);
+        cookie.setSecure(true);
         cookie.setMaxAge(60 * 60 * 24 * 30); // 30 days
         cookie.setPath("/");
         response.addCookie(cookie);
