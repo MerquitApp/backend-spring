@@ -15,11 +15,12 @@ public class WebConfig {
 
     @Bean
     public WebMvcConfigurer webMvcConfig() {
+        System.out.println("Configuring CORS for frontend at " + frontendUrl);
         return new WebMvcConfigurer(){
             @Override
             public void addCorsMappings(CorsRegistry registry) {
                 registry.addMapping("/**")
-                        .allowedOrigins("https://devllo.netlify.app")
+                        .allowedOrigins(frontendUrl)
                         .allowedMethods("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS")
                         .allowedHeaders("*")
                         .allowCredentials(true);
