@@ -1,6 +1,8 @@
 package com.mercapp.backendspring.task;
 
 import com.mercapp.backendspring.project.ProjectService;
+import com.mercapp.backendspring.projectColumn.ProjectColumnService;
+import com.mercapp.backendspring.projectColumn.models.ProjectColumn;
 import com.mercapp.backendspring.projectUser.ProjectUserService;
 import com.mercapp.backendspring.projectUser.enums.Roles;
 import com.mercapp.backendspring.task.dtos.UpdateTaskDTO;
@@ -17,6 +19,8 @@ public class TaskService {
     private TaskRepository taskRepository;
     @Autowired
     private ProjectService projectService;
+    @Autowired
+    private ProjectColumnService projectColumnService;
 
     @Cacheable(value = "task", key = "#id + #projectId + #userId")
     public Task getById(Long id, Long projectId, Long userId) {
@@ -39,15 +43,20 @@ public class TaskService {
 
         Task task = this.taskRepository.findById(id).orElse(null);
 
-        if(updateTaskDTO.getTitle() != null) {
+        if (updateTaskDTO.getProject_column_id() != null) {
+            ProjectColumn projectColumn = this.projectColumnService.getById(updateTaskDTO.getProject_column_id());
+            task.setProject_column(projectColumn);
+        }
+
+        if (updateTaskDTO.getTitle() != null) {
             task.setTitle(updateTaskDTO.getTitle());
         }
 
-        if(updateTaskDTO.getDescription() != null) {
+        if (updateTaskDTO.getDescription() != null) {
             task.setDescription(updateTaskDTO.getDescription());
         }
 
-        if(updateTaskDTO.getPriority() != null) {
+        if (updateTaskDTO.getPriority() != null) {
             task.setPriority(updateTaskDTO.getPriority());
         }
 
@@ -58,7 +67,7 @@ public class TaskService {
     public Task deleteById(Long id, Long projectId, Long userId) {
         Roles role = this.projectService.getProjectUserRole(projectId, userId);
 
-        if(ProjectUserService.WRITE_ROLES.contains(role)) {
+        if (ProjectUserService.WRITE_ROLES.contains(role)) {
             Task task = this.taskRepository.findById(id).orElse(null);
             this.taskRepository.deleteById(id);
 

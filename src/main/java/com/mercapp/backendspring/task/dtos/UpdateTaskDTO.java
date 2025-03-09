@@ -12,5 +12,6 @@ import lombok.Setter;
 public class UpdateTaskDTO {
     private String title;
     private String description;
+    private Long project_column_id;
     private Integer priority;
 }

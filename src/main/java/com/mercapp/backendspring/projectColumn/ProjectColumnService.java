@@ -95,6 +95,10 @@ public class ProjectColumnService {
         return null;
     }
 
+    public ProjectColumn getById(Long projectId) {
+        return this.projectColumnRepository.findById(projectId).orElse(null);
+    }
+
     @Cacheable(value = "project-column", key = "#projectId + #columnId")
     public ProjectColumn getById(Long projectId, Long columnId, Long userId) {
         Roles role = this.projectService.getProjectUserRole(projectId, userId);
