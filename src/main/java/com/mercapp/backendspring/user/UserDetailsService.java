@@ -26,6 +26,7 @@ public class UserDetailsService {
     @Lazy
     private ProjectUserService projectUserService;
 
+    @CacheEvict(value = "user", key = "#result.id")
     public UserDetails create(CreateUserDTO createUserDTO) {
         String encodedPassword = this.passwordEncoder.encode((createUserDTO.getPassword()));
 
@@ -65,6 +66,7 @@ public class UserDetailsService {
         this.userRepository.deleteById(id);
     }
 
+    @CacheEvict(value = "user", key = "#result.id")
     public UserDetails findOrCreateOauthUser(CreateOauthUserDTO createOauthUserDTO) {
         UserDetails user = this.userRepository.findByGithubId(createOauthUserDTO.getGithubId());
 
@@ -75,6 +77,7 @@ public class UserDetailsService {
         return user;
     }
 
+    @CacheEvict(value = "user", key = "#result.id")
     public UserDetails createOauth(CreateOauthUserDTO createOauthUserDTO) {
         UserDetails user = UserDetails.builder()
                 .username(createOauthUserDTO.getUsername())

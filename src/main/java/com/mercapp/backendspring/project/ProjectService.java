@@ -30,6 +30,7 @@ public class ProjectService {
 
     private final Integer SHARE_CODE_LENGTH = 6;
 
+    @CacheEvict(value = "project", key = "#result.id")
     public Project create(CreateProjectDTO createProjectDTO, UserDetails user) {
         Project project = Project.builder()
                 .name(createProjectDTO.getName())

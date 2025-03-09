@@ -25,6 +25,7 @@ public class ProjectColumnService {
     @Autowired
     private ProjectService projectService;
 
+    @CacheEvict(value = "project-column", key = "#projectId + #result.id")
     public ProjectColumn create(CreateProjectColumnDTO createProjectColumnDTO, Long projectId, Long userId) {
         Project project = this.projectService.getById(projectId);
         Roles role = this.projectService.getProjectUserRole(projectId, userId);
