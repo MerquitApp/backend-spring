@@ -9,6 +9,7 @@ import com.mercapp.backendspring.user.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -26,7 +27,10 @@ public class UserDetailsService {
     @Lazy
     private ProjectUserService projectUserService;
 
-    @CacheEvict(value = "user", key = "#result.id")
+    @Caching(evict = {
+            @CacheEvict(value = "user", key = "#result.id"),
+            @CacheEvict(value = "user-by-username", key = "#createUserDTO.username")
+    })
     public UserDetails create(CreateUserDTO createUserDTO) {
         String encodedPassword = this.passwordEncoder.encode((createUserDTO.getPassword()));
 
@@ -38,7 +42,10 @@ public class UserDetailsService {
         return this.userRepository.save(user);
     }
 
-    @CacheEvict(value = "user", key = "#id")
+    @Caching(evict = {
+            @CacheEvict(value = "user", key = "#id"),
+            @CacheEvict(value = "user-by-username", key = "#updateUserDTO.username")
+    })
     public UserDetails update(Long id, UpdateUserDTO updateUserDTO) {
         UserDetails user = this.userRepository.findById(id).orElse(null);
 
@@ -66,7 +73,11 @@ public class UserDetailsService {
         this.userRepository.deleteById(id);
     }
 
-    @CacheEvict(value = "user", key = "#result.id")
+    @Caching(evict = {
+            @CacheEvict(value = "user", key = "#result.id"),
+            @CacheEvict(value = "user-by-github-id", key = "#createOauthUserDTO.githubId"),
+            @CacheEvict(value = "user-by-username", key = "#createOauthUserDTO.username")
+    })
     public UserDetails findOrCreateOauthUser(CreateOauthUserDTO createOauthUserDTO) {
         UserDetails user = this.userRepository.findByGithubId(createOauthUserDTO.getGithubId());
 
@@ -77,7 +88,11 @@ public class UserDetailsService {
         return user;
     }
 
-    @CacheEvict(value = "user", key = "#result.id")
+    @Caching(evict = {
+            @CacheEvict(value = "user", key = "#result.id"),
+            @CacheEvict(value = "user-by-github-id", key = "#createOauthUserDTO.githubId"),
+            @CacheEvict(value = "user-by-username", key = "#createOauthUserDTO.username")
+    })
     public UserDetails createOauth(CreateOauthUserDTO createOauthUserDTO) {
         UserDetails user = UserDetails.builder()
                 .username(createOauthUserDTO.getUsername())
