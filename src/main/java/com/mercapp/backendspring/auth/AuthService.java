@@ -8,6 +8,8 @@ import com.mercapp.backendspring.user.models.UserDetails;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseCookie;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -48,12 +50,15 @@ public class AuthService {
     }
 
     public void appendTokenToCookie(HttpServletResponse response, String token) {
-        Cookie cookie = new Cookie(AuthController.COOKIE_NAME, token);
-        cookie.setHttpOnly(true);
-        cookie.setSecure(true);
-        cookie.setMaxAge(60 * 60 * 24 * 30); // 30 days
-        cookie.setPath("/");
-        response.addCookie(cookie);
+        ResponseCookie cookie = ResponseCookie.from(AuthController.COOKIE_NAME, token)
+                .httpOnly(true)
+                .secure(true)
+                .maxAge(60 * 60 * 24 * 30) // 30 days
+                .path("/")
+                .sameSite("None")
+                .build();
+
+        response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
     }
 
     public UserDetails register(CreateUserDTO createUserDTO) {
