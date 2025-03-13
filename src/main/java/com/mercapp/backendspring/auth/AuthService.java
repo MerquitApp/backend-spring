@@ -61,6 +61,18 @@ public class AuthService {
         response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
     }
 
+    public void logout(HttpServletResponse response) {
+       ResponseCookie cookie = ResponseCookie.from(AuthController.COOKIE_NAME, "")
+               .httpOnly(true)
+               .secure(true)
+               .maxAge(0)
+               .path("/")
+               .sameSite("None")
+               .build();
+
+       response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
+    }
+
     public UserDetails register(CreateUserDTO createUserDTO) {
         UserDetails user = this.userDetailsService.create(createUserDTO);
         return user;

@@ -51,11 +51,6 @@ public class AuthController {
 
     @GetMapping("/logout")
     public void logout(HttpServletResponse response) {
-        Cookie cookie = new Cookie(COOKIE_NAME, "");
-        cookie.setMaxAge(0);
-        cookie.setPath("/");
-        cookie.setHttpOnly(true);
-
-        response.addCookie(cookie);
+        this.authService.logout(response);
     }
 }
